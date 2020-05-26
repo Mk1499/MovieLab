@@ -42,8 +42,8 @@ app.get("/", function(req, res) {
 const userRouter = require("./routes/user.routes");
 app.use("/users", userRouter);
 
-// const bookRouter = require("./routes/booking.routes");
-// app.use("/book", bookRouter);
+const wlistRouter = require("./routes/watchList.routes");
+app.use("/list", wlistRouter);
 // var fs = require('fs');
 let port = process.env.PORT || 3005;
 server.listen(port, function() {
