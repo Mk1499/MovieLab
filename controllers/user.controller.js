@@ -27,8 +27,9 @@ exports.signUp = (req, res) => {
     });
   } else {
     let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (!emailRegex.test(req.body.email)) {
+    let enhancedEmail = req.body.email.trim().toLocaleLowerCase(); 
+    
+    if (!emailRegex.test(enhancedEmail)) {
       res.status(400).send({
         error: "Please Enter a valid email"
       });
@@ -36,7 +37,7 @@ exports.signUp = (req, res) => {
     
     else {
       // Create a User
-      let enhancedEmail = req.body.email.trim().toLocaleLowerCase(); 
+      
       const user = new User({
         fullName: req.body.fullName,
         type: "client",
@@ -83,13 +84,14 @@ exports.findOne = (req, res) => {
 // Find a single User with a userId
 exports.login = (req, res) => {
   let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-  if (!emailRegex.test(req.body.email)) {
+  let enhancedEmail = req.body.email.trim().toLocaleLowerCase();
+  
+  if (!emailRegex.test(enhancedEmail)) {
     res.status(400).send({
       error: "Please Enter a valid email"
     });
   } else {
-    let enhancedEmail = req.body.email.trim().toLocaleLowerCase();
+    
     let user = {
       email: enhancedEmail,
       password: req.body.password
