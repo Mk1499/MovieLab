@@ -36,10 +36,11 @@ exports.signUp = (req, res) => {
     
     else {
       // Create a User
+      let enhancedEmail = req.body.email.trim().toLocaleLowerCase(); 
       const user = new User({
         fullName: req.body.fullName,
         type: "client",
-        email: req.body.email,
+        email: enhancedEmail,
         phone: req.body.phone,
         password: req.body.password,
         avatarURL:req.body.avatarURL || "https://provisionhealthcare.com/wp-content/uploads/2018/11/user-avatar.jpg"
@@ -88,8 +89,9 @@ exports.login = (req, res) => {
       error: "Please Enter a valid email"
     });
   } else {
+    let enhancedEmail = req.body.email.trim().toLocaleLowerCase();
     let user = {
-      email: req.body.email,
+      email: enhancedEmail,
       password: req.body.password
     };
     User.login(user, (err, data) => {
