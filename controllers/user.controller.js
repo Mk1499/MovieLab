@@ -27,8 +27,9 @@ exports.signUp = (req, res) => {
     });
   } else {
     let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (!emailRegex.test(req.body.email)) {
+    let enhancedEmail = req.body.email.trim().toLocaleLowerCase(); 
+    
+    if (!emailRegex.test(enhancedEmail)) {
       res.status(400).send({
         error: "Please Enter a valid email"
       });
@@ -36,10 +37,11 @@ exports.signUp = (req, res) => {
     
     else {
       // Create a User
+      
       const user = new User({
         fullName: req.body.fullName,
         type: "client",
-        email: req.body.email,
+        email: enhancedEmail,
         phone: req.body.phone,
         password: req.body.password,
         avatarURL:req.body.avatarURL || "https://provisionhealthcare.com/wp-content/uploads/2018/11/user-avatar.jpg"
@@ -84,14 +86,16 @@ exports.login = (req, res) => {
   console.log("Login Called");
   
   let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\.[0-9]{1,8}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-  if (!emailRegex.test(req.body.email)) {
+  let enhancedEmail = req.body.email.trim().toLocaleLowerCase();
+  
+  if (!emailRegex.test(enhancedEmail)) {
     res.status(400).send({
       error: "Please Enter a valid email"
     });
   } else {
+    
     let user = {
-      email: req.body.email,
+      email: enhancedEmail,
       password: req.body.password
     };
     User.login(user, (err, data) => {
