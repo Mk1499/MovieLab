@@ -11,14 +11,12 @@ module.exports = (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.tokenSecret).userData;
 
     console.log("AUTH : ", decodedToken);
-    const userType = decodedToken.type;
     const userId = decodedToken.id;
-    if (!userType) {
+    if (!userId) {
       throw "Un Authorized Request";
-    } else if (userType === "admin" || userId == req.params.userId) {
-      next();
     } else {
-      throw "Un Authorized Request";
+     req.body.userid = userId; 
+     next();
     }
   } catch (error) {
     console.log("err : ", error);

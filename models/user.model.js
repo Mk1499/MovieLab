@@ -32,7 +32,7 @@ User.create = (userData, result) => {
           },
           null
         );
-        return;
+        throw "Sorry But This email is already signed up before";
       } else if (res.rowCount === 0) {
         return res;
       }
@@ -62,44 +62,6 @@ User.create = (userData, result) => {
       console.log("error: ", err);
       result(err, null);
     });
-
-//   sql.query(q, (err, res) => {
-//     console.log(err, res.rowCount);
-
-//     if (err) {
-//       console.log("error: ", err);
-//       result(err, null);
-//       return;
-//     } else if (res.rowCount > 0) {
-//       result(
-//         {
-//           message: "Sorry But This email is already signed up before"
-//         },
-//         null
-//       );
-//       return;
-//     } else if (res.rowCount === 0) {
-//       // let token = jwt.sign({ userData }, process.env.tokenSecret);
-
-//       // userData.token = token;
-//       let query = "Insert into users (fullName,";
-//       sql.query("INSERT INTO Users SET ?", userData, (err, res) => {
-//         if (err) {
-//           console.log("error: ", err);
-//           result(err, null);
-//           return;
-//         }
-
-//         let fullUser = { id: res.insertId, ...userData };
-
-//         console.log("created user: ", fullUser);
-//         let token = jwt.sign({ userData: fullUser }, process.env.tokenSecret);
-
-//         userData.token = token;
-//         result(null, { id: res.insertId, ...userData });
-//       });
-//     }
-//   });
 };
 
 // Login User
@@ -115,7 +77,7 @@ User.login = (user, result) => {
       if (err) {
         console.log("error : ", err);
         result(err, null);
-        return;
+        throw err;
       }
       if (res.rowCount>0) {
         console.log("User : ", res.rows[0].password);
@@ -140,24 +102,6 @@ User.login = (user, result) => {
         result({ kind: "not_found" }, null);
       }
     });
-  
-    //  query = `SELECT * FROM Users WHERE email = '${user.email}' and password = '${user.password}'`;
-    //   console.log("Q : ", query);
-  
-    //   sql.query(query, (err, res) => {
-    //     if (err) {
-    //       console.log("error : ", err);
-    //       result(err, null);
-    //       return;
-    //     }
-  
-    //   if (res.length) {
-  
-    //   }
-  
-    //   // not found User with given email and password
-    //   result({ kind: "not_found" }, null);
-    // });
   };
 
 module.exports = User;

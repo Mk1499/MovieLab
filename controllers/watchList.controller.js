@@ -40,3 +40,32 @@ exports.addToWatchList = (req, res) => {
       });
   }
 };
+
+
+exports.getWList = (req, res) => {
+  // Validate request
+  if (Object.keys(req.body).length === 0) {
+    res.status(400).send({
+      error: "Content can not be empty!"
+    });
+  }
+console.log("REQ Body : ", req.body);
+
+  if (!req.body.userid) {
+    res.status(400).send({
+      error: "User id is Invalid"
+    });
+  } else {
+    const listData= {
+      userid : req.body.userid, 
+    }
+
+    WList.getWList(listData, (err, data) => {
+        if (err)
+          res.status(500).send({
+            error: err.message || "Some error occurred while creating the User."
+          });
+        else res.send(data);
+      });
+  }
+};
