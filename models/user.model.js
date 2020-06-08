@@ -4,11 +4,11 @@ const bcrypt = require("bcrypt");
 
 // constructor
 const User = function(user) {
-  this.fullName = user.fullName;
+  this.fullname = user.fullname;
   this.email = user.email;
   this.phone = user.phone;
   this.password = user.password;
-  this.avatarURL = user.avatarURL 
+  this.avatarurl = user.avatarurl 
 };
 
 // Create user
