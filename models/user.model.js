@@ -48,6 +48,7 @@ User.create = (userData, result) => {
             result(err, null);
             return;
           }
+          console.log("CRes : ", res); 
   
           let fullUser = { id: res.insertId, ...userData };
   
