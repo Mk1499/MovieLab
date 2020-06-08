@@ -39,12 +39,12 @@ exports.signUp = (req, res) => {
       // Create a User
       
       const user = new User({
-        fullName: req.body.fullName,
+        fullname: req.body.fullName,
         type: "client",
         email: enhancedEmail,
         phone: req.body.phone,
         password: req.body.password,
-        avatarURL:req.body.avatarURL || "https://provisionhealthcare.com/wp-content/uploads/2018/11/user-avatar.jpg"
+        avatarurl:req.body.avatarURL || "https://provisionhealthcare.com/wp-content/uploads/2018/11/user-avatar.jpg"
       });
 
       bcrypt.hash(user.password, 10, (err, hashedPW) => {
