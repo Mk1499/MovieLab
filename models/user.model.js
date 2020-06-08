@@ -50,13 +50,13 @@ User.create = (userData, result) => {
           }
           console.log("CRes : ", res); 
   
-          let fullUser = { id: res.insertId, ...userData };
+          let fullUser = { id: res.rows[0].id, ...userData };
   
           console.log("created user: ", fullUser);
           let token = jwt.sign({ userData: fullUser }, process.env.tokenSecret);
   
           userData.token = token;
-          result(null, { id: res.insertId, ...userData });
+          result(null, { id: res.rows[0].id, ...userData });
         }); 
     })
     .catch(err => {
