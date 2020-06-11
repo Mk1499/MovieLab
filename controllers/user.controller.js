@@ -1,6 +1,8 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 
+
+
 exports.signUp = (req, res) => {
   // Validate request
   if (Object.keys(req.body).length === 0) {
@@ -119,17 +121,28 @@ exports.login = (req, res) => {
 
 
 exports.updateImg = (req, res) => {
-  User.updateImg(req.params.userId, (err, data) => {
-    if (err) {
-      if (err.kind === "not_found") {
-        res.status(404).send({
-          error: `Not found Customer with id ${req.params.userId}.`
-        });
-      } else {
-        res.status(500).send({
-          error: "Error retrieving Customer with id " + req.params.userId
-        });
-      }
-    } else res.send(data);
-  });
+  // User.updateImg(req.body.userId,(err, data) => {
+  //   if (err) {
+  //     if (err.kind === "not_found") {
+  //       res.status(404).send({
+  //         error: `Not found Customer with id ${req.params.userId}.`
+  //       });
+  //     } else {
+  //       res.status(500).send({
+  //         error: "Error retrieving Customer with id " + req.params.userId
+  //       });
+  //     }
+  //   } else res.send(data);
+  // });
+  console.log("DIR NAme : ",__dirname);
+  
+  // console.log("update image REQ : ",Object.keys(req) );
+  // console.log(req.body);
+  let m = {
+    id : req.body.userid,
+    url : req.file.path 
+  }
+  
+res.send(m)
+  
 };
