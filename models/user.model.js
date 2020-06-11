@@ -4,11 +4,11 @@ const bcrypt = require("bcrypt");
 
 // constructor
 const User = function(user) {
-  this.fullName = user.fullName;
+  this.fullname = user.fullname;
   this.email = user.email;
   this.phone = user.phone;
   this.password = user.password;
-  this.avatarURL = user.avatarURL 
+  this.avatarurl = user.avatarurl 
 };
 
 // Create user
@@ -48,14 +48,15 @@ User.create = (userData, result) => {
             result(err, null);
             return;
           }
+          console.log("CRes : ", res); 
   
-          let fullUser = { id: res.insertId, ...userData };
+          let fullUser = { id: res.rows[0].id, ...userData };
   
           console.log("created user: ", fullUser);
           let token = jwt.sign({ userData: fullUser }, process.env.tokenSecret);
   
           userData.token = token;
-          result(null, { id: res.insertId, ...userData });
+          result(null, { id: res.rows[0].id, ...userData });
         }); 
     })
     .catch(err => {
