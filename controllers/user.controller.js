@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
-
+const os = require('os'); 
 
 
 exports.signUp = (req, res) => {
@@ -46,7 +46,7 @@ exports.signUp = (req, res) => {
         email: enhancedEmail,
         phone: req.body.phone,
         password: req.body.password,
-        avatarurl:req.body.avatarURL || "https://provisionhealthcare.com/wp-content/uploads/2018/11/user-avatar.jpg"
+        avatarurl:req.body.avatarURL || "images/user-avatar.jpg"
       });
 
       bcrypt.hash(user.password, 10, (err, hashedPW) => {
@@ -121,28 +121,28 @@ exports.login = (req, res) => {
 
 
 exports.updateImg = (req, res) => {
-  // User.updateImg(req.body.userId,(err, data) => {
-  //   if (err) {
-  //     if (err.kind === "not_found") {
-  //       res.status(404).send({
-  //         error: `Not found Customer with id ${req.params.userId}.`
-  //       });
-  //     } else {
-  //       res.status(500).send({
-  //         error: "Error retrieving Customer with id " + req.params.userId
-  //       });
-  //     }
-  //   } else res.send(data);
-  // });
-  console.log("DIR NAme : ");
+  User.updateImg(req,(err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          error: `Not found Customer with id ${req.params.userId}.`
+        });
+      } else {
+        res.status(500).send({
+          error: "Error retrieving Customer with id " + req.params.userId
+        });
+      }
+    } else res.send(data);
+  });
+ 
   
   // console.log("update image REQ : ",Object.keys(req) );
-  console.log(req.file);
-  let m = {
-    id : req.body.userid,
-    url :"images/"+ req.file.filename 
-  }
+//   console.log(req.file);
+//   let m = {
+//     id : req.body.userid,
+//     url :"images/"+ req.file.filename 
+//   }
   
-res.send(m)
+// res.send(m)
   
 };

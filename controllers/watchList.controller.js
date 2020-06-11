@@ -28,7 +28,8 @@ exports.addToWatchList = (req, res) => {
       backdrop_path:req.body.backdrop_path,
       popularity:req.body.popularity,
       release_date:req.body.release_date,
-      vote_average: req.body.vote_average
+      vote_average: req.body.vote_average,
+      overview: req.body.overview
     });
 
     WList.create(list, (err, data) => {

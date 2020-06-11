@@ -106,16 +106,21 @@ User.login = (user, result) => {
   };
 
 
-  User.updateImg = (userID,newUrl,result) => {
+  User.updateImg = (req,result) => {
+   
+   console.log("model :  ",req.body.userid, req.file.filename);
+   let userID = req.body.userid; 
+   let imgUrl = "images/"+req.file.filename;
+   
     let q = {
       name: "update user avatar url",
       text: "UPDATE users SET avatarurl=$1 WHERE id = $2",
-      values: [newUrl,userID]
+      values: [imgUrl,userID]
     };
     sql.query(q)
         .then(res=> {
           console.log("update user img res :",res);
-          
+          result(null,{id:userID,imgUrl})
         })
         .catch(err => {
           console.log("error: ", err);
