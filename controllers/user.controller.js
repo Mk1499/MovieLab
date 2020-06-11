@@ -113,3 +113,23 @@ exports.login = (req, res) => {
     });
   }
 };
+
+
+// update user profile Image
+
+
+exports.updateImg = (req, res) => {
+  User.updateImg(req.params.userId, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          error: `Not found Customer with id ${req.params.userId}.`
+        });
+      } else {
+        res.status(500).send({
+          error: "Error retrieving Customer with id " + req.params.userId
+        });
+      }
+    } else res.send(data);
+  });
+};
