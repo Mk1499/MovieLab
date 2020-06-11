@@ -134,13 +134,13 @@ exports.updateImg = (req, res) => {
   //     }
   //   } else res.send(data);
   // });
-  console.log("DIR NAme : ",__dirname);
+  console.log("DIR NAme : ");
   
   // console.log("update image REQ : ",Object.keys(req) );
-  // console.log(req.body);
+  console.log(req.file);
   let m = {
     id : req.body.userid,
-    url : req.file.path 
+    url :"images/"+ req.file.filename 
   }
   
 res.send(m)

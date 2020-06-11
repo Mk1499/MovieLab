@@ -26,8 +26,8 @@ app.use(
 );
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
-
 app.set("view engine", "ejs");
+app.use("/images",express.static(__dirname+'/public'))
 
 app.get("/", function(req, res) {
   res.send("Welcome in Movie Lab App Server ");
