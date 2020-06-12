@@ -40,7 +40,7 @@ User.create = (userData, result) => {
         let query = {
             name:"Create User",
             text : "Insert into users (fullName,email,password,avatarurl) values ($1,$2,$3,$4)  RETURNING id",
-            values:[userData.fullName,userData.email,userData.password,userData.avatarURL]
+            values:[userData.fullName,userData.email,userData.password,userData.avatarurl]
         }
         sql.query(query, (err, res) => {
           if (err) {
