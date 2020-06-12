@@ -42,7 +42,6 @@ exports.signUp = (req, res) => {
       
       const user = new User({
         fullname: req.body.fullName,
-        type: "client",
         email: enhancedEmail,
         phone: req.body.phone,
         password: req.body.password,
@@ -106,7 +105,13 @@ exports.login = (req, res) => {
           res.status(404).send({
             error: `Not found User with this email and password `
           });
-        } else {
+        }
+        else if (err.kind === "found as social") {
+          res.status(404).send({
+            error: `Sorry but Email Related to another socail account`
+          });
+        }
+        else {
           res.status(500).send({
             error: err.message || "Error retrieving Customer "
           });
@@ -116,6 +121,57 @@ exports.login = (req, res) => {
   }
 };
 
+// Find a single User with a userId
+exports.socailLogin = (req, res) => {
+  console.log("Login Called");
+   // Validate request
+   if (Object.keys(req.body).length === 0) {
+    res.status(400).send({
+      error: "Content can not be empty!"
+    });
+  }
+
+  if (!req.body.name) {
+    res.status(400).send({
+      error: "User name is required"
+    });
+  } else if (!req.body.email) {
+    res.status(400).send({
+      error: "email is required"
+    });
+   
+  } else if (!req.body.photo) {
+    res.status(400).send({
+      error: "Photo is required"
+    });
+  } else {
+    let enhancedEmail = req.body.email.trim().toLocaleLowerCase(); 
+      // Create a User
+      const user = new User({
+        fullname: req.body.name,
+        email: enhancedEmail,
+        phone: req.body.phone || " ",
+        password: req.body.password || "it's social",
+        avatarurl:req.body.photo || "images/user-avatar.jpg",
+        type: "social"
+      });
+
+      bcrypt.hash(user.password, 10, (err, hashedPW) => {
+        user.password = hashedPW;
+
+        // Save User in the database
+
+        User.socialLogin(user, (err, data) => {
+          if (err)
+            res.status(500).send({
+              error:
+                err.message || "Some error occurred while Social Login."
+            });
+          else res.send(data);
+        });
+      });
+    }
+  }
 
 // update user profile Image
 

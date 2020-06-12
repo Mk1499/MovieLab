@@ -22,9 +22,11 @@ const upload = multer({ storage: storage })
 UserRouter.post("/signup", users.signUp);
 
 UserRouter.post("/login", users.login);
+UserRouter.post("/social-login", users.socailLogin);
 
 UserRouter.get("/:userId", userAuth, users.findOne);
 
 UserRouter.post("/updateimg", upload.single("new-image"),userAuth , users.updateImg);
+
 
 module.exports = UserRouter;

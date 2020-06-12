@@ -8,7 +8,8 @@ const User = function(user) {
   this.email = user.email;
   this.phone = user.phone;
   this.password = user.password;
-  this.avatarurl = user.avatarurl 
+  this.avatarurl = user.avatarurl;
+  this.type = user.type || "normal";
 };
 
 // Create user
@@ -36,28 +37,35 @@ User.create = (userData, result) => {
       } else if (res.rowCount === 0) {
         return res;
       }
-    }).then(res => {
-        let query = {
-            name:"Create User",
-            text : "Insert into users (fullName,email,password,avatarurl) values ($1,$2,$3,$4)  RETURNING id",
-            values:[userData.fullName,userData.email,userData.password,userData.avatarURL]
+    })
+    .then(res => {
+      let query = {
+        name: "Create User",
+        text:
+          "Insert into users (fullname,email,password,avatarurl) values ($1,$2,$3,$4)  RETURNING id",
+        values: [
+          userData.fullname,
+          userData.email,
+          userData.password,
+          userData.avatarurl
+        ]
+      };
+      sql.query(query, (err, res) => {
+        if (err) {
+          console.log("error: ", err);
+          result(err, null);
+          return;
         }
-        sql.query(query, (err, res) => {
-          if (err) {
-            console.log("error: ", err);
-            result(err, null);
-            return;
-          }
-          console.log("CRes : ", res); 
-  
-          let fullUser = { id: res.rows[0].id, ...userData };
-  
-          console.log("created user: ", fullUser);
-          let token = jwt.sign({ userData: fullUser }, process.env.tokenSecret);
-  
-          userData.token = token;
-          result(null, { id: res.rows[0].id, ...userData });
-        }); 
+        console.log("CRes : ", res);
+
+        let fullUser = { id: res.rows[0].id, ...userData };
+
+        console.log("created user: ", fullUser);
+        let token = jwt.sign({ userData: fullUser }, process.env.tokenSecret);
+
+        userData.token = token;
+        result(null, { id: res.rows[0].id, ...userData });
+      });
     })
     .catch(err => {
       console.log("error: ", err);
@@ -67,64 +75,125 @@ User.create = (userData, result) => {
 
 // Login User
 User.login = (user, result) => {
-    console.log("User Data : ", user);
-    
-  
-    let query = `SELECT * FROM Users WHERE email = '${user.email}'`;
-  
-    sql.query(query, (err, res) => {
-        console.log("R :",res.rowCount);
-        
-      if (err) {
-        console.log("error : ", err);
-        result(err, null);
-        throw err;
-      }
-      if (res.rowCount>0) {
-        console.log("User : ", res.rows[0].password);
-        let userData = res.rows[0];
-        bcrypt.compare(user.password, userData.password, (err, match) => {
-          if (err) {
-            console.log("error : ", err);
-            result(err, null);
+  console.log("User Data : ", user);
+
+  let query = `SELECT * FROM Users WHERE email = '${user.email}'`;
+
+  sql.query(query, (err, res) => {
+    console.log("R :", res.rowCount);
+
+    if (err) {
+      console.log("error : ", err);
+      result(err, null);
+      throw err;
+    }
+    if (res.rowCount > 0) {
+      console.log("User : ", res.rows[0].password);
+      let userData = res.rows[0];
+      bcrypt.compare(user.password, userData.password, (err, match) => {
+        if (err) {
+          console.log("error : ", err);
+          result(err, null);
+          return;
+        } else if (match) {
+          console.log("found user : ", userData);
+
+          if (userData.type === "social") {
+            result({ kind: "found as social" }, null);
             return;
-          } else if (match) {
-            console.log("found user : ", userData);
+          } else {
             let token = jwt.sign({ userData }, process.env.tokenSecret);
-  
+
             userData.token = token;
             result(null, userData);
             return;
-          } else {
-            result({ kind: "not_found" }, null);
           }
-        });
-      } else {
-        result({ kind: "not_found" }, null);
-      }
-    });
+        } else {
+          result({ kind: "not_found" }, null);
+        }
+      });
+    } else {
+      result({ kind: "not_found" }, null);
+    }
+  });
+};
+
+User.socialLogin = (userData, result) => {
+  console.log("Social login model called... : ", userData);
+  let q = {
+    name: "prev-email",
+    text: "SELECT id from Users WHERE email = $1",
+    values: [userData.email]
   };
 
+  sql
+    .query(q)
+    .then(res => {
+      if (res.rowCount > 0) {
+        console.log("Found user in social login : ", res);
 
-  User.updateImg = (req,result) => {
-   
-   console.log("model :  ",req.body.userid, req.file.filename);
-   let userID = req.body.userid; 
-   let imgUrl = "images/"+req.file.filename;
-   
-    let q = {
-      name: "update user avatar url",
-      text: "UPDATE users SET avatarurl=$1 WHERE id = $2",
-      values: [imgUrl,userID]
-    };
-    sql.query(q)
-        .then(res=> {
-          console.log("update user img res :",res);
-          result(null,{id:userID,imgUrl})
-        })
-        .catch(err => {
-          console.log("error: ", err);
-          result(err, null);
-        })
-  }
+        let token = jwt.sign({ userData }, process.env.tokenSecret);
+
+        userData.token = token;
+        result(null, userData);
+      } 
+      else if (res.rowCount === 0) {
+        let query = {
+          name: "Create social User",
+          text:
+            "Insert into users (fullname,email,password,avatarurl,type) values ($1,$2,$3,$4,$5)  RETURNING id",
+          values: [
+            userData.fullname,
+            userData.email,
+            userData.password,
+            userData.avatarurl,
+            userData.type
+          ]
+        };
+        sql.query(query, (err, res) => {
+          if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
+          }
+          console.log("CRes : ", res);
+  
+          let fullUser = { id: res.rows[0].id, ...userData };
+  
+          console.log("created user: ", fullUser);
+          let token = jwt.sign({ userData: fullUser }, process.env.tokenSecret);
+  
+          userData.token = token;
+          result(null, { id: res.rows[0].id, ...userData });
+        });
+      }
+    })
+    
+    .catch(err => {
+      console.log("error: ", err);
+      result(err, null);
+    });
+};
+
+User.updateImg = (req, result) => {
+  console.log("model :  ", req.body.userid, req.file.filename);
+  let userID = req.body.userid;
+  let imgUrl = "images/" + req.file.filename;
+
+  let q = {
+    name: "update user avatar url",
+    text: "UPDATE users SET avatarurl=$1 WHERE id = $2",
+    values: [imgUrl, userID]
+  };
+  sql
+    .query(q)
+    .then(res => {
+      console.log("update user img res :", res);
+      result(null, { id: userID, imgUrl });
+    })
+    .catch(err => {
+      console.log("error: ", err);
+      result(err, null);
+    });
+};
 module.exports = User;
