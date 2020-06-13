@@ -131,7 +131,7 @@ User.socialLogin = (userData, result) => {
     .then(res => {
       if (res.rowCount > 0) {
         console.log("Found user in social login : ", res);
-
+        userData.id = res.rows[0].id ; 
         let token = jwt.sign({ userData }, process.env.tokenSecret);
 
         userData.token = token;
