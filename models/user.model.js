@@ -122,7 +122,7 @@ User.socialLogin = (userData, result) => {
   console.log("Social login model called... : ", userData);
   let q = {
     name: "prev-email",
-    text: "SELECT id from Users WHERE email = $1",
+    text: "SELECT id , avatarurl from Users WHERE email = $1",
     values: [userData.email]
   };
 
@@ -132,6 +132,8 @@ User.socialLogin = (userData, result) => {
       if (res.rowCount > 0) {
         console.log("Found user in social login : ", res);
         userData.id = res.rows[0].id ; 
+        userData.avatarurl = res.rows[0].avatarurl ; 
+
         let token = jwt.sign({ userData }, process.env.tokenSecret);
 
         userData.token = token;
