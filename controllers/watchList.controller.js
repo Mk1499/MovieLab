@@ -18,6 +18,7 @@ exports.addToWatchList = (req, res) => {
       error: "Media Id is required"
     });
   } else {
+    console.log("REQ : " , req.body.overview); 
     // Create a User
     const list = new WList({
       userid: req.body.userid,

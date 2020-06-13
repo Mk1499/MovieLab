@@ -13,7 +13,7 @@ const WList = function(WList) {
   this.popularity = WList.popularity;
   this.release_date = WList.release_date;
   this.vote_average = WList.vote_average;
-  this.overview = WList.overviewzz
+  this.overview = WList.overview
 };
 
 // add to watch list
