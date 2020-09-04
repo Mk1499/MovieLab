@@ -26,7 +26,8 @@ UserRouter.post("/social-login", users.socailLogin);
 
 UserRouter.get("/:userId", userAuth, users.findOne);
 
-UserRouter.post("/updateimg", upload.single("new-image"),userAuth , users.updateImg);
+// UserRouter.post("/updateimg", upload.single("new-image"),userAuth , users.updateImg);
+UserRouter.post("/updateimg", upload.single("new-image"),users.updateImg);
 
 
 module.exports = UserRouter;
